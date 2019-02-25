@@ -35,5 +35,11 @@ func main() {
 		NotFoundFile: Getenv("not_found_file", "index.html"),
 	})))
 
+	http_server := &http.Server{}
+	http_server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "https://"+r.Host+"/", http.StatusFound)
+	})
+	go http_server.ListenAndServe()
+
 	log.Fatal(http.ListenAndServeTLS(":443", Getenv("cert_file", "ws.mofon.top.cert"), Getenv("key_file", "ws.mofon.top.key"), nil))
 }
