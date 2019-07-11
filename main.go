@@ -41,5 +41,5 @@ func main() {
 	})
 	go http_server.ListenAndServe()
 
-	log.Fatal(http.ListenAndServeTLS(":443", Getenv("cert_file", "ws.mofon.top.cert"), Getenv("key_file", "ws.mofon.top.key"), nil))
+	log.Fatal(http.ListenAndServeTLS(":"+Getenv("port", "443"), Getenv("cert_file", "ws.mofon.top.cert"), Getenv("key_file", "ws.mofon.top.key"), nil))
 }
