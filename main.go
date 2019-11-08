@@ -42,9 +42,23 @@ func main() {
 		return
 	}
 
-	http.Handle(Getenv("base_path", "/"), handlers.CompressHandler(http.FileServer(&StaticFileSystem{
-		fs:           http.Dir(Getenv("serve_path", "./dist/")),
-		NotFoundFile: Getenv("not_found_file", "index.html"),
+	base_path := Getenv("base_path", "/")
+	serve_path := Getenv("serve_path", "./dist/")
+	not_found_file := Getenv("not_found_file", "index.html")
+	port := Getenv("port", "443")
+	cert_file := Getenv("cert_file", "ws.mofon.top.cert")
+	key_file := Getenv("key_file", "ws.mofon.top.key")
+
+	fmt.Println("base_path:", base_path)
+	fmt.Println("serve_path:", serve_path)
+	fmt.Println("not_found_file:", not_found_file)
+	fmt.Println("port:", port)
+	fmt.Println("cert_file:", cert_file)
+	fmt.Println("key_file:", key_file)
+
+	http.Handle(base_path, handlers.CompressHandler(http.FileServer(&StaticFileSystem{
+		fs:           http.Dir(serve_path),
+		NotFoundFile: not_found_file,
 	})))
 
 	http_server := &http.Server{}
@@ -53,5 +67,5 @@ func main() {
 	})
 	go http_server.ListenAndServe()
 
-	log.Fatal(http.ListenAndServeTLS(":"+Getenv("port", "443"), Getenv("cert_file", "ws.mofon.top.cert"), Getenv("key_file", "ws.mofon.top.key"), nil))
+	log.Fatal(http.ListenAndServeTLS(":"+port, cert_file, key_file, nil))
 }
