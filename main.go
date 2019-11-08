@@ -39,6 +39,7 @@ func main() {
 		fmt.Println("cert_file")
 		fmt.Println("key_file")
 		fmt.Println("base_path")
+		return
 	}
 
 	http.Handle(Getenv("base_path", "/"), handlers.CompressHandler(http.FileServer(&StaticFileSystem{
