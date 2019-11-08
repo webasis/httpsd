@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 
+	"fmt"
+
 	"github.com/gorilla/handlers"
 )
 
@@ -30,7 +32,16 @@ func (fs *StaticFileSystem) Open(name string) (http.File, error) {
 }
 
 func main() {
-	http.Handle("/", handlers.CompressHandler(http.FileServer(&StaticFileSystem{
+	if len(os.Args) == 2 && os.Args[1] == "help" {
+		fmt.Println("ENV:")
+		fmt.Println("serve_path")
+		fmt.Println("not_found_file")
+		fmt.Println("cert_file")
+		fmt.Println("key_file")
+		fmt.Println("base_path")
+	}
+
+	http.Handle(Getenv("base_path", "/"), handlers.CompressHandler(http.FileServer(&StaticFileSystem{
 		fs:           http.Dir(Getenv("serve_path", "./dist/")),
 		NotFoundFile: Getenv("not_found_file", "index.html"),
 	})))
